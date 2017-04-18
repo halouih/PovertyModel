@@ -13,7 +13,9 @@ from decimal import Decimal
 
 sns.set_style('white')
 
+
 def normalize(data):
+    # This function normalizes the data in order to get only values between 0 and 1
     minima = np.min(data, axis=0)
     maxima = np.max(data, axis=0)
     a = 1/(maxima-minima)
@@ -22,6 +24,8 @@ def normalize(data):
     return data
 
 def arrondi(df):
+    # This function acts on a dataframe composed of every type of data
+    # It will floor the float numbers to 2 decimals and re-write the qp values in a scientific format (qp values is used in the prim algorithm)
     dg = df
     for i in df.index:
         for j in df.columns:
@@ -35,9 +39,9 @@ def arrondi(df):
     return dg
 
 def correct_countrycode(countrycode):
-    '''
-    Corrects countrycodes in the database that don't correspond to official 3 letters codes.
-    '''
+    
+    # Corrects countrycodes in the database that don't correspond to official 3 letters codes.
+    
     if countrycode=='TMP':
         countrycode='TLS'
     if countrycode=='ZAR':
@@ -46,7 +50,8 @@ def correct_countrycode(countrycode):
         countrycode='ROU'
     return countrycode
 
-color = ['b','g','r','c']
+color = ['b','g','r','c'] # Colors used for the legend. Only 4 given that it is the max number of clusters
+# myinputs are the input parameters. There are 14 inputs in the model
 myinputs = ['shareag','sharemanu', 'shareemp', 'grserv', 'grag', 'grmanu', 'skillpserv','skillpag', 'skillpmanu', 'p', 'b','issp5','voice','ccint']
 selectedcountry = 'MAR'
 
@@ -73,10 +78,14 @@ bau['issp5'] = bau.ssp=='ssp5'
 
 bau_c = bau[bau.country==selectedcountry]
 
+# hip contains every baseline data for the selected country
 hip = bau_c
 hip['shared_prosperity'] = (hip['incbott40']/hip['avincome'])
+
+# oois is a list of the output of interest
 oois = ['incbott20','shared_prosperity']
 
+# The dataframe 'data' will contains only the points whose coordinates are oois[0] and oois[1]
 data = np.array([[hip[oois[0]][0],hip[oois[1]][0]]])
 for i in range(1,len(hip.index)):
     data = np.concatenate((data,np.array([[hip[oois[0]][i],hip[oois[1]][i]]])))
@@ -86,12 +95,13 @@ data = normalize(data)
 #Initial Values
 
 n_clusters = 4
-f_value = 0.5
-seuil = 1.3
+f_value = 0.5 # f_value is the ratio coverage/density used to select the prim box in the Prim algorithm
+seuil = 1.3 # seuil is the threshold coverage+density that must be met in the clustering, if not, the number of clusters is reduced
 
 #Clustering: Gaussian Mixture Model. It returns a dataframe with normalized incbott20 and shared prosperity along with the corresponding class label
 
 def clustering(n_clusters):
+    # This will return a dataframe composed of the oois and a column specifying the class
     g = mixture.GMM(n_components=n_clusters, n_iter=500)
     g.fit(data)
     pred = g.predict(data)+1
@@ -115,7 +125,7 @@ def clustering(n_clusters):
 #Prim Algorithm
 
 def get_prim(n_clusters, f_value):
-    
+    # It is crucial that this function returns the dataframe df below because this function must be called only once when the number of clusters is determined
     df = clustering(n_clusters)
     classes = df[['class']].drop_duplicates()['class']
     list_prim =[]
