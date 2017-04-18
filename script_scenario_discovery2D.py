@@ -189,7 +189,7 @@ for i in range(1,max(classes)+1):
     plt.subplot()
     plt.scatter(to_plot_x, to_plot_y, c = color[i-1])
 
-
+# Now the legend
 import matplotlib.patches as mpatches
 recs = []
 classes_b = []
