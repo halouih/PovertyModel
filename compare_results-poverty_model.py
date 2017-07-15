@@ -9,6 +9,7 @@ import os
 
 folder = os.getcwd()
 
+wbccodes = pd.read_csv(folder+"/wbccodes.csv")
 ssp_gdp = pd.read_csv(folder+"/SspDb_country_data_2013-06-12.csv")
 ini_data = pd.read_csv(folder+"/ini_data_info_may14.csv")
 codes_tables = pd.read_csv(folder+"/ISO3166_and_R32.csv")
@@ -124,7 +125,6 @@ relabel = dict(zip(myinputs, mylabels))
 results = pd.DataFrame(columns=myinputs+['future_gdp','model_gdp','country'])
 
 
-wbccodes = pd.read_csv(folder+"/wbccodesHamza.csv")
 
 for i in wbccodes.index:
     wbccodes.loc[i,'country'] = correct_countrycode(wbccodes.loc[i,'country'])
