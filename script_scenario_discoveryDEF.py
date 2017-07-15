@@ -1,6 +1,6 @@
 """
 
-Determination of optimal clusters, density and coverage
+Determination of optimal clusters, density & coverage
 
 @author: Hamza
 """
