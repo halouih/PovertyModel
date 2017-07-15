@@ -7,9 +7,11 @@ from sklearn import mixture
 import prim
 import os
 
-ssp_gdp = pd.read_csv("C:/Users/Hamza/poverty_climate_model-master/Cross validation/SspDb_country_data_2013-06-12.csv")
-ini_data = pd.read_csv("C:/Users/Hamza/poverty_climate_model-master/Cross validation/ini_data_info_may14.csv")
-codes_tables = pd.read_csv("C:/Users/Hamza/poverty_climate_model-master/Cross validation/ISO3166_and_R32.csv")
+folder = os.getcwd()
+
+ssp_gdp = pd.read_csv(folder+"/SspDb_country_data_2013-06-12.csv")
+ini_data = pd.read_csv(folder+"/ini_data_info_may14.csv")
+codes_tables = pd.read_csv(folder+"/ISO3166_and_R32.csv")
 ini_year = 2007
 
 
@@ -122,13 +124,13 @@ relabel = dict(zip(myinputs, mylabels))
 results = pd.DataFrame(columns=myinputs+['future_gdp','model_gdp','country'])
 
 
-wbccodes = pd.read_csv("C:/Users/Hamza/poverty_climate_model-master/wbccodesHamza.csv")
+wbccodes = pd.read_csv(folder+"/wbccodesHamza.csv")
 
 for i in wbccodes.index:
     wbccodes.loc[i,'country'] = correct_countrycode(wbccodes.loc[i,'country'])
 
 nameofthisround = 'sept2016_4'
-model = 'C:/Users/Hamza/poverty_climate_model-master'
+model = os.getcwd()
 bau_folder   = "{}/baselines_{}/".format(model,nameofthisround)
 cc_folder    = "{}/with_cc_{}/".format(model,nameofthisround)
     
@@ -276,4 +278,4 @@ for selectedcountry in list_country:
     
 
 
-results.to_csv('C:/Users/Hamza/poverty_climate_model-master/Cross validation/Results.csv', index=False)
+results.to_csv(folder+'Results.csv', index=False)
